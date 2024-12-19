@@ -1,0 +1,97 @@
+/* Общие стили */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #ece9e6, #ffffff);
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+#app {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 1.5em;
+    color: #00796b;
+}
+
+.scanner {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#scanButton {
+    background-color: #00796b;
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 30px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#scanButton:hover {
+    background-color: #004d40;
+}
+
+#status {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.result {
+    background: #f1f1f1;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.result h2 {
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    color: #00796b;
+}
+
+#scanResult {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+    background: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.8em;
+    color: #999;
+}
+
+@media (max-width: 500px) {
+    #scanButton {
+        width: 100%;
+    }
+}
