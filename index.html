@@ -3,226 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лови Падающие Объекты</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #87CEEB, #f0f8ff);
-        }
-
-        #gameArea {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background: url('https://i.imgur.com/8KQ4KQk.png') no-repeat center center;
-            background-size: cover;
-        }
-
-        #basket {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            width: 80px;
-            height: 80px;
-            margin-left: -40px;
-            background: url('https://i.imgur.com/OdL0XPt.png') no-repeat center center;
-            background-size: contain;
-        }
-
-        .object {
-            position: absolute;
-            top: -50px;
-            width: 50px;
-            height: 50px;
-            background-size: contain;
-            background-repeat: no-repeat;
-        }
-
-        #scoreBoard {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.7);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        #startScreen, #gameOverScreen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-        }
-
-        .button {
-            background: #28a745;
-            padding: 15px 30px;
-            margin: 20px;
-            border: none;
-            border-radius: 25px;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .button:hover {
-            background: #218838;
-        }
-
-        @media (max-width: 600px) {
-            #basket {
-                width: 60px;
-                height: 60px;
-                margin-left: -30px;
-            }
-
-            .object {
-                width: 40px;
-                height: 40px;
-            }
-
-            #scoreBoard {
-                font-size: 20px;
-                padding: 8px 16px;
-            }
-
-            .button {
-                padding: 12px 24px;
-                font-size: 18px;
-            }
-        }
-    </style>
+    <title>Сканнер Паспортных Чипов</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div id="app">
+        <header>
+            <h1>Сканнер Паспортных Чипов</h1>
+        </header>
 
-    <div id="gameArea">
-        <div id="scoreBoard">Счет: 0</div>
-        <div id="basket"></div>
+        <main>
+            <div class="scanner">
+                <button id="scanButton">Сканировать Паспорт</button>
+                <div id="status">Нажмите кнопку для сканирования.</div>
+            </div>
 
-        <div id="startScreen">
-            <h1>Лови Падающие Объекты</h1>
-            <button class="button" onclick="startGame()">Начать Игру</button>
-        </div>
+            <div class="result">
+                <h2>Результаты Сканирования</h2>
+                <pre id="scanResult">Данные не получены.</pre>
+            </div>
+        </main>
 
-        <div id="gameOverScreen" style="display: none;">
-            <h1>Игра окончена</h1>
-            <p>Ваш счет: <span id="finalScore">0</span></p>
-            <button class="button" onclick="restartGame()">Играть Снова</button>
-        </div>
+        <footer>
+            <p>&copy; 2024 PassportScanner</p>
+        </footer>
     </div>
 
-    <script>
-        const basket = document.getElementById('basket');
-        const gameArea = document.getElementById('gameArea');
-        const scoreBoard = document.getElementById('scoreBoard');
-        const startScreen = document.getElementById('startScreen');
-        const gameOverScreen = document.getElementById('gameOverScreen');
-        const finalScore = document.getElementById('finalScore');
-
-        let score = 0;
-        let gameInterval;
-        let objectInterval;
-        let objects = [];
-        let isGameOver = false;
-
-        function startGame() {
-            startScreen.style.display = 'none';
-            score = 0;
-            scoreBoard.textContent = 'Счет: 0';
-            isGameOver = false;
-            basket.style.left = '50%';
-            document.addEventListener('touchmove', moveBasket, { passive: false });
-            gameInterval = requestAnimationFrame(updateGame);
-            objectInterval = setInterval(createObject, 1000);
-        }
-
-        function restartGame() {
-            gameOverScreen.style.display = 'none';
-            startGame();
-        }
-
-        function gameOver() {
-            isGameOver = true;
-            clearInterval(objectInterval);
-            document.removeEventListener('touchmove', moveBasket);
-            cancelAnimationFrame(gameInterval);
-            finalScore.textContent = score;
-            gameOverScreen.style.display = 'flex';
-        }
-
-        function moveBasket(e) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            const gameAreaRect = gameArea.getBoundingClientRect();
-            let newLeft = touch.clientX - gameAreaRect.left;
-            if (newLeft < 40) newLeft = 40;
-            if (newLeft > gameAreaRect.width - 40) newLeft = gameAreaRect.width - 40;
-            basket.style.left = `${newLeft}px`;
-        }
-
-        function createObject() {
-            const obj = document.createElement('div');
-            obj.classList.add('object');
-            obj.style.left = `${Math.random() * (gameArea.clientWidth - 50)}px`;
-            obj.style.backgroundImage = `url('https://i.imgur.com/4AI6E5s.png')`; // Изображение объекта
-            gameArea.appendChild(obj);
-            objects.push({ element: obj, y: -50 });
-        }
-
-        function updateGame() {
-            if (isGameOver) return;
-
-            objects.forEach((obj, index) => {
-                obj.y += 5;
-                obj.element.style.top = `${obj.y}px`;
-
-                // Проверка на столкновение с корзиной
-                const objRect = obj.element.getBoundingClientRect();
-                const basketRect = basket.getBoundingClientRect();
-
-                if (
-                    objRect.bottom >= basketRect.top &&
-                    objRect.left < basketRect.right &&
-                    objRect.right > basketRect.left &&
-                    objRect.bottom <= basketRect.bottom
-                ) {
-                    // Ловим объект
-                    score += 1;
-                    scoreBoard.textContent = `Счет: ${score}`;
-                    gameArea.removeChild(obj.element);
-                    objects.splice(index, 1);
-                }
-
-                // Проверка на падение объекта за пределы экрана
-                if (obj.y > gameArea.clientHeight) {
-                    gameOver();
-                }
-            });
-
-            gameInterval = requestAnimationFrame(updateGame);
-        }
-    </script>
+    <script src="cordova.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
